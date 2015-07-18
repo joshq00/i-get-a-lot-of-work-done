@@ -16,35 +16,50 @@ function dt ( { yr, mo, dy, hr, min, sec } ) {
 }
 function makeCommit ( repo, date ) {
 	const isodate = date.toISOString();
-	fs.appendFileSync( fil, `\n// ${ isodate }` );
 	process.env.GIT_AUTHOR_DATE = process.env.GIT_COMMITTER_DATE = isodate;
-	return Q.nfcall( ::repo.commit_all, isodate );
+	return Q.nfcall( fs.appendFile, fil, `\n// ${ isodate }`, {} )
+		.then( () => Q.nfcall( ::repo.commit_all, isodate ) );
+}
+const rnd = ( min = 0, max = 1 ) => min + Math.round( Math.random() * max );
+const today = new Date();
+function rndmzDate ( date ) {
+	date = new Date( date );
+	date.setDate( date.getDate() + rnd( 0, 6 ) );
+	date.setHours( rnd( 9, 20 ) );
+	date.setMinutes( rnd( 0, 59 ) );
+	date.setSeconds( rnd( 0, 59 ) );
+	date.setMilliseconds( Math.random() * 1000 );
+	if ( date.getTime() > today.getTime() ) {
+		date.setDate( -rnd( 1, 365 ) );
+	}
+	return date;
 }
 function fakeCommit () {
 	return new Promise( resolve => setTimeout( resolve, 250 ) );
 }
 function makeCommits ( repo, first, days = 100 ) {
 	return Q.async( function* commits () {
-		let when = {
-			yr: 2014,
-			mo: 6,
-			dy: 4,
-			hr: 9,
-			min: 22,
-			sec: 49,
-		};
-		let date = dt( when );
+		let date = dt( first );
 		while ( days-- ) {
 			// yield fakeCommit();
 			yield makeCommit( repo, date );
-			date.setDate( date.getDate() + 1 );
+			date = rndmzDate( date );
 			console.log( days );
 		}
 		return date;
 	} )();
 }
+let firstDate = {
+	yr: 2014,
+	mo: 9,
+	dy: 4,
+	hr: 9,
+	min: 22,
+	sec: 49,
+};
+
 openRepo( __dirname, {} )
-	.then( repo => makeCommits( repo, {}, 10 ) )
+	.then( repo => makeCommits( repo, firstDate, 250 ) )
 	.then( ::console.log )
 	;
 	// 	console.log( repo.commit_all );
