@@ -5,7 +5,7 @@ import fs from 'fs';
 const fil = __dirname + '/main.js';
 const openRepo = Q.denodeify( ( ...args ) => new git.Repo( ...args ) );
 
-const rnd = ( min = 0, max = 1 ) => min + Math.round( Math.random() * max );
+const rnd = ( min = 0, max = 1 ) => min + Math.round( Math.random() * ( max - min ) );
 
 const today = new Date();
 const yearAgo = ( () => {
