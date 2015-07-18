@@ -21,7 +21,7 @@ function rndmDate () {
 function makeCommit ( repo, date ) {
 	const isodate = date.toISOString();
 	process.env.GIT_AUTHOR_DATE = process.env.GIT_COMMITTER_DATE = isodate;
-	return Q.nfcall( fs.appendFile, fil, `\n// ${ isodate }`, {} )
+	return Q.nfcall( fs.appendFile, fil, `// ${ isodate }\n`, {} )
 		.then( () => Q.nfcall( ::repo.commit_all, isodate ) );
 }
 
