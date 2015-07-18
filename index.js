@@ -6,18 +6,16 @@ const fil = __dirname + '/main.js';
 const openRepo = Q.denodeify( ( ...args ) => new git.Repo( ...args ) );
 
 const rnd = ( min = 0, max = 1 ) => min + Math.round( Math.random() * max );
+
 const today = new Date();
-function rndmzDate ( date ) {
-	date = new Date( date );
-	date.setDate( date.getDate() + rnd( 0, 7 ) );
-	date.setHours( rnd( 9, 20 ) );
-	date.setMinutes( rnd( 0, 59 ) );
-	date.setSeconds( rnd( 0, 59 ) );
-	date.setMilliseconds( Math.random() * 1000 );
-	if ( date.getTime() > today.getTime() ) {
-		date.setDate( -rnd( 1, 365 ) );
-	}
+const yearAgo = ( () => {
+	let date = new Date();
+	date.setDate( date.getDate() - 365 );
 	return date;
+} )();
+
+function rndmDate () {
+	return new Date( rnd( yearAgo.getTime(), today.getTime() ) );
 }
 
 function makeCommit ( repo, date ) {
@@ -28,15 +26,12 @@ function makeCommit ( repo, date ) {
 }
 
 function makeCommits ( repo, commits = 100 ) {
-	let date = new Date();
-	date.setDate( date.getDate() - 365 );
 	return Q.async( function* docommits () {
 		while ( commits-- ) {
+			let date = rndmDate();
 			yield makeCommit( repo, date );
-			date = rndmzDate( date );
 			console.log( commits );
 		}
-		return date;
 	} )();
 }
 
