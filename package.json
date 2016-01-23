@@ -1,0 +1,26 @@
+{
+  "name": "i-get-a-lot-of-work-done",
+  "version": "0.1.0",
+  "description": "getting promoted is as easy as npm install",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.4.5",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "git": "^0.1.5",
+    "q": "^1.4.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.homedepot.com:joshq/i-get-a-lot-of-work-done.git"
+  },
+  "keywords": [
+    "efficiency"
+  ],
+  "author": "Josh Quintana <josh_d_quintana@homedepot.com>",
+  "license": "MIT"
+}
